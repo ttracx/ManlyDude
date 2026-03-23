@@ -1,5 +1,12 @@
 {
   "framework": "nextjs",
   "installCommand": "pnpm install",
-  "buildCommand": "cd ../.. && pnpm turbo run build --filter=@manlydude/web"
+  "buildCommand": "cd ../.. && pnpm turbo run build --filter=@manlydude/web",
+  "outputDirectory": ".next",
+  "regions": ["iad1"],
+  "functions": {
+    "src/app/api/ai/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
 }
