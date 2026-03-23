@@ -264,6 +264,81 @@ CREATE INDEX idx_subscriptions_user_id ON public.subscriptions(user_id);
 CREATE INDEX idx_subscriptions_stripe_id ON public.subscriptions(stripe_subscription_id);
 
 -- ===========================================
+-- NUTRITION PLANS (Plus+ tier)
+-- ===========================================
+CREATE TABLE IF NOT EXISTS public.nutrition_plans (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  goal TEXT,
+  daily_calories INTEGER NOT NULL,
+  daily_protein_g INTEGER NOT NULL,
+  daily_carbs_g INTEGER NOT NULL,
+  daily_fat_g INTEGER NOT NULL,
+  meals JSONB NOT NULL DEFAULT '[]',
+  is_ai_generated BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE public.nutrition_plans ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own nutrition plans"
+  ON public.nutrition_plans FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can create nutrition plans"
+  ON public.nutrition_plans FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own nutrition plans"
+  ON public.nutrition_plans FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own nutrition plans"
+  ON public.nutrition_plans FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE INDEX idx_nutrition_plans_user_id ON public.nutrition_plans(user_id);
+
+-- ===========================================
+-- MEAL ENTRIES (logged meals)
+-- ===========================================
+CREATE TABLE IF NOT EXISTS public.meal_entries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  date DATE NOT NULL,
+  meal_name TEXT NOT NULL,
+  foods JSONB NOT NULL DEFAULT '[]',
+  total_calories INTEGER NOT NULL DEFAULT 0,
+  total_protein_g INTEGER NOT NULL DEFAULT 0,
+  total_carbs_g INTEGER NOT NULL DEFAULT 0,
+  total_fat_g INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE public.meal_entries ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own meal entries"
+  ON public.meal_entries FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can create meal entries"
+  ON public.meal_entries FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own meal entries"
+  ON public.meal_entries FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own meal entries"
+  ON public.meal_entries FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE INDEX idx_meal_entries_user_id ON public.meal_entries(user_id);
+CREATE INDEX idx_meal_entries_date ON public.meal_entries(date DESC);
+
+-- ===========================================
 -- UPDATED_AT TRIGGER
 -- ===========================================
 CREATE OR REPLACE FUNCTION public.update_updated_at()
@@ -284,4 +359,8 @@ CREATE TRIGGER update_workout_templates_updated_at
 
 CREATE TRIGGER update_subscriptions_updated_at
   BEFORE UPDATE ON public.subscriptions
+  FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+
+CREATE TRIGGER update_nutrition_plans_updated_at
+  BEFORE UPDATE ON public.nutrition_plans
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
