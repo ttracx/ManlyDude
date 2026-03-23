@@ -275,16 +275,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-800 py-12 text-center text-gray-500">
-        <p className="text-lg font-bold text-gray-400">MANLYDUDE</p>
-        <p className="mt-2 text-sm">
-          Made by men of men, for the most manliest of dudes. &copy; {new Date().getFullYear()}
-        </p>
-        <p className="mt-1 text-xs text-gray-700">
-          Disclaimer: ManlyDude is for all genders. Manliness is a state of mind. Lift heavy, be kind.
-        </p>
-      </footer>
     </main>
   );
 }
