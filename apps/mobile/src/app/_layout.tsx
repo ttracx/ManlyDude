@@ -1,6 +1,6 @@
 import '../../../global.css';
 import React from 'react';
-import { Slot } from 'expo-router';
+import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { QueryProvider } from '@/providers/QueryProvider';
@@ -13,7 +13,10 @@ export default function RootLayout() {
       <QueryProvider>
         <AuthProvider>
           <StatusBar style="auto" />
-          <Slot />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="(auth)" options={{ presentation: 'modal' }} />
+          </Stack>
         </AuthProvider>
       </QueryProvider>
     </SafeAreaProvider>

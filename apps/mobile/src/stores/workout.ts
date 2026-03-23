@@ -61,15 +61,14 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
   },
 
   completeWorkout: () => {
-    set((state) => {
-      if (!state.activeWorkout) return state;
-      const completed = {
-        ...state.activeWorkout.session,
-        completed_at: new Date().toISOString(),
-      };
-      state.addToSyncQueue({ type: 'complete_session', payload: completed });
-      return { activeWorkout: null };
-    });
+    const { activeWorkout, addToSyncQueue } = get();
+    if (!activeWorkout) return;
+    const completed = {
+      ...activeWorkout.session,
+      completed_at: new Date().toISOString(),
+    };
+    addToSyncQueue({ type: 'complete_session', payload: completed });
+    set({ activeWorkout: null });
   },
 
   cancelWorkout: () => set({ activeWorkout: null }),

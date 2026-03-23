@@ -21,21 +21,47 @@ export default function WorkoutsScreen() {
           />
         </View>
 
-        <Text className="mb-3 text-lg font-semibold text-gray-700 dark:text-gray-300">
-          Templates
+        {/* Quick Start Cards */}
+        <Text className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">
+          Quick Start
+        </Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-6">
+          {[
+            { name: 'Push Day', desc: 'Chest, shoulders, tris', emoji: '🫸' },
+            { name: 'Pull Day', desc: 'Back, biceps, rear delts', emoji: '🫷' },
+            { name: 'Leg Day', desc: 'Quads, hams, glutes', emoji: '🦵' },
+            { name: 'Full Body', desc: 'The whole enchilada', emoji: '🔥' },
+          ].map((template) => (
+            <Card key={template.name} className="mr-3 w-40">
+              <Text className="text-2xl">{template.emoji}</Text>
+              <Text className="mt-2 font-bold text-gray-900 dark:text-white">
+                {template.name}
+              </Text>
+              <Text className="text-xs text-gray-500 dark:text-gray-400">{template.desc}</Text>
+            </Card>
+          ))}
+        </ScrollView>
+
+        <Text className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">
+          Your Templates
         </Text>
         <Card className="mb-4">
-          <Text className="text-gray-500 dark:text-gray-400">
-            No workout templates yet. Create your first template or let AI generate one.
+          <Text className="text-center text-gray-500 dark:text-gray-400">
+            No custom templates yet. Create your own or let the AI forge one from the
+            fires of sports science. 🔨
           </Text>
+          <View className="mt-3">
+            <Button title="Create Template" variant="outline" />
+          </View>
         </Card>
 
-        <Text className="mb-3 text-lg font-semibold text-gray-700 dark:text-gray-300">
-          History
+        <Text className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">
+          Recent History
         </Text>
         <Card>
-          <Text className="text-gray-500 dark:text-gray-400">
-            No workout history yet. Complete your first workout to see it here.
+          <Text className="text-center text-gray-500 dark:text-gray-400">
+            Your workout history will appear here once you complete your first session.
+            The path to greatness starts with a single rep. 💪
           </Text>
         </Card>
       </ScrollView>
